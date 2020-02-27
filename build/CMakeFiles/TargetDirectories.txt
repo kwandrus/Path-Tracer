@@ -1,0 +1,3 @@
+C:/Users/Kyle/Documents/ecs275a/Programs/Path-Tracer/build/CMakeFiles/specter.dir
+C:/Users/Kyle/Documents/ecs275a/Programs/Path-Tracer/build/CMakeFiles/ALL_BUILD.dir
+C:/Users/Kyle/Documents/ecs275a/Programs/Path-Tracer/build/CMakeFiles/ZERO_CHECK.dir

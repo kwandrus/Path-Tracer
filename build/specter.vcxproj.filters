@@ -1,0 +1,165 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="16.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="C:\Users\Kyle\Documents\ecs275a\Programs\Path-Tracer\Background.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Kyle\Documents\ecs275a\Programs\Path-Tracer\BoundingBox.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Kyle\Documents\ecs275a\Programs\Path-Tracer\Camera.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Kyle\Documents\ecs275a\Programs\Path-Tracer\Color.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Kyle\Documents\ecs275a\Programs\Path-Tracer\ConstantBackground.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Kyle\Documents\ecs275a\Programs\Path-Tracer\Group.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Kyle\Documents\ecs275a\Programs\Path-Tracer\Image.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Kyle\Documents\ecs275a\Programs\Path-Tracer\LambertianMaterial.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Kyle\Documents\ecs275a\Programs\Path-Tracer\Light.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Kyle\Documents\ecs275a\Programs\Path-Tracer\Material.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Kyle\Documents\ecs275a\Programs\Path-Tracer\Object.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Kyle\Documents\ecs275a\Programs\Path-Tracer\Parser.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Kyle\Documents\ecs275a\Programs\Path-Tracer\PinholeCamera.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Kyle\Documents\ecs275a\Programs\Path-Tracer\Plane.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Kyle\Documents\ecs275a\Programs\Path-Tracer\Point.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Kyle\Documents\ecs275a\Programs\Path-Tracer\PointLight.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Kyle\Documents\ecs275a\Programs\Path-Tracer\Primitive.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Kyle\Documents\ecs275a\Programs\Path-Tracer\Scene.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Kyle\Documents\ecs275a\Programs\Path-Tracer\Sphere.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Kyle\Documents\ecs275a\Programs\Path-Tracer\ThinLensCamera.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Kyle\Documents\ecs275a\Programs\Path-Tracer\Time.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Kyle\Documents\ecs275a\Programs\Path-Tracer\Vector.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Kyle\Documents\ecs275a\Programs\Path-Tracer\specter.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="C:\Users\Kyle\Documents\ecs275a\Programs\Path-Tracer\Background.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Kyle\Documents\ecs275a\Programs\Path-Tracer\BoundingBox.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Kyle\Documents\ecs275a\Programs\Path-Tracer\Camera.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Kyle\Documents\ecs275a\Programs\Path-Tracer\Color.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Kyle\Documents\ecs275a\Programs\Path-Tracer\ConstantBackground.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Kyle\Documents\ecs275a\Programs\Path-Tracer\Group.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Kyle\Documents\ecs275a\Programs\Path-Tracer\HitRecord.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Kyle\Documents\ecs275a\Programs\Path-Tracer\Image.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Kyle\Documents\ecs275a\Programs\Path-Tracer\LambertianMaterial.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Kyle\Documents\ecs275a\Programs\Path-Tracer\Light.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Kyle\Documents\ecs275a\Programs\Path-Tracer\Material.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Kyle\Documents\ecs275a\Programs\Path-Tracer\Math.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Kyle\Documents\ecs275a\Programs\Path-Tracer\Object.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Kyle\Documents\ecs275a\Programs\Path-Tracer\Parser.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Kyle\Documents\ecs275a\Programs\Path-Tracer\PinholeCamera.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Kyle\Documents\ecs275a\Programs\Path-Tracer\Plane.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Kyle\Documents\ecs275a\Programs\Path-Tracer\Point.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Kyle\Documents\ecs275a\Programs\Path-Tracer\PointLight.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Kyle\Documents\ecs275a\Programs\Path-Tracer\Primitive.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Kyle\Documents\ecs275a\Programs\Path-Tracer\Ray.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Kyle\Documents\ecs275a\Programs\Path-Tracer\RenderContext.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Kyle\Documents\ecs275a\Programs\Path-Tracer\Scene.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Kyle\Documents\ecs275a\Programs\Path-Tracer\Sphere.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Kyle\Documents\ecs275a\Programs\Path-Tracer\ThinLensCamera.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Kyle\Documents\ecs275a\Programs\Path-Tracer\Time.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Kyle\Documents\ecs275a\Programs\Path-Tracer\Vector.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\Kyle\Documents\ecs275a\Programs\Path-Tracer\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{2E387A1D-A9FC-3628-BE0F-7155CE163DE9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{D2BFC5A0-1928-357E-97A4-91668D838D19}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

@@ -99,11 +99,14 @@ Color Scene::traceRay(const RenderContext& context, const Ray& ray, const Color&
 {
     // code based off of: https://www.scratchapixel.com/code.php?id=34&origin=/lessons/3d-basic-rendering/global-illumination-path-tracing
     
+    if (depth == maxRayDepth)
+        return Color(0, 0, 0);
+
     Color result(0, 0, 0), indirect(0, 0, 0), direct(0, 0, 0);
     HitRecord hit(DBL_MAX);
     object->intersect(hit, context, ray);
 
-    if (depth <= maxRayDepth && hit.getPrimitive()) {
+    if (hit.getPrimitive()) {
         // Ray hit something...
         const Material* matl = hit.getMaterial();
 
@@ -127,9 +130,9 @@ Color Scene::traceRay(const RenderContext& context, const Ray& ray, const Color&
 
             Vector sample = uniformSampleHemisphere(randNum1, randNum2);
             Vector sampleWorld(
-                sample.x * Nb.x + sample.y * normal.x + sample.z * Nt.x,
-                sample.x * Nb.y + sample.y * normal.y + sample.z * Nt.y,
-                sample.x * Nb.z + sample.y * normal.z + sample.z * Nt.z);
+                sample.x() * Nb.x() + sample.y() * normal.x() + sample.z() * Nt.x(),
+                sample.x() * Nb.y() + sample.y() * normal.y() + sample.z() * Nt.y(),
+                sample.x() * Nb.z() + sample.y() * normal.z() + sample.z() * Nt.z());
 
             // create ray
             Ray nextRay(hitpos + sampleWorld * BIAS, sampleWorld);
@@ -154,10 +157,10 @@ void createCoordinateSystem(const Vector& N, Vector& Nt, Vector& Nb)
 {
     // source: https://www.scratchapixel.com/code.php?id=34&origin=/lessons/3d-basic-rendering/global-illumination-path-tracing
 
-    if (std::fabs(N.x) > std::fabs(N.y))
-        Nt = Vector(N.z, 0, -N.x) / sqrtf(N.x * N.x + N.z * N.z);
+    if (std::fabs(N.x()) > std::fabs(N.y()))
+        Nt = Vector(N.z(), 0, -N.x()) / sqrtf(N.x() * N.x() + N.z() * N.z());
     else
-        Nt = Vector(0, -N.z, N.y) / sqrtf(N.y * N.y + N.z * N.z);
+        Nt = Vector(0, -N.z(), N.y()) / sqrtf(N.y() * N.y() + N.z() * N.z());
     Nb = Cross(N, Nt);
 }
 

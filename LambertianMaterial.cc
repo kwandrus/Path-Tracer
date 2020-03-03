@@ -62,6 +62,7 @@ Color LambertianMaterial::shade(const RenderContext& context,
         Color light_color;
         Vector light_direction;
         double dist = (*begin++)->getLight(light_color, light_direction, context, hitpos);
+        light_direction.normalize();
         double cosphi = Dot(normal, light_direction);
 
         Vector reflect_direction = 2 * Dot(normal, light_direction) * normal - light_direction;

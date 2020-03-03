@@ -4,6 +4,7 @@
 #include "ThinLensCamera.h"
 #include "ConstantBackground.h"
 #include "PointLight.h"
+#include "AreaLight.h"
 #include "LambertianMaterial.h"
 #include "Group.h"
 #include "Plane.h"
@@ -448,6 +449,8 @@ Light* Parser::parseAreaLight()
 {
     Point position(0.0, 0.0, 10.0);
     Color color(1.0, 1.0, 1.0);
+    Vector a(0.0, 0.0, 0.0);
+    Vector b(0.0, 0.0, 0.0);
     if (peek(Token::left_brace))
         for (; ; )
         {
@@ -455,18 +458,24 @@ Light* Parser::parseAreaLight()
                 position = parsePoint();
             else if (peek("color"))
                 color = parseColor();
+            else if (peek("a"))
+                a = parseVector();
+            else if (peek("b"))
+                b = parseVector();
             else if (peek(Token::right_brace))
                 break;
             else
-                throwParseException("Expected `position', `color' or }.");
+                throwParseException("Expected `position', `color', `a', `b' or }.");
         }
-    return new AreaLight(position, color);
+    return new AreaLight(position, color, a, b);
 }
 
 Light *Parser::parseLight()
 {
-    if ( peek( "point" ) )
-      return parsePointLight();
+    if (peek("point"))
+        return parsePointLight();
+    else if (peek("area"))
+        return parseAreaLight();
     throwParseException( "Expected a light type." );
     return 0;
 }

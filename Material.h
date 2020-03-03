@@ -19,9 +19,9 @@ class Material {
   virtual Color getColor() const = 0;
   virtual float getKs() const = 0;
 
-  virtual bool scatter(const Ray& ray, const HitRecord& hit, Vector albedo, Ray& scattered, float& pdf) const {
+  /*virtual bool scatter(const Ray& ray, const HitRecord& hit, Vector albedo, Ray& scattered, float& pdf) const {
       return false;
-  }
+  }*/
 
  private:
   Material(const Material&);

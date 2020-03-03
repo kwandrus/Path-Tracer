@@ -95,7 +95,6 @@ class Scene {
   int maxRayDepth;
   int numSamples;
   double minAttenuation;
-
 };
 
 #endif

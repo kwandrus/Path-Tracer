@@ -1,11 +1,11 @@
 // This is a test scene for Specter.  Try running "specter test.scn".
 
-xres 512
-yres 512
+xres 256
+yres 256
 filename "image.ppm"
 maxraydepth 4
 minattenuation 0.2
-samplesperpixel 25
+numSamples 10
 
 camera pinhole {
   eye [ -24.0, -2.0, 5.2 ]
@@ -20,13 +20,17 @@ background constant {
 
 ambient [ 0.6, 0.6, 0.6 ]
 
-light point {
+light area {
   position [ -30.0, -20.0, 80.0 ]
   color [ 0.7, 0.9, 0.9 ]
+  a [0.577, 0.577, 0.577]
+  b [0.408, -0.816, 0.408]
 }
-light point {
+light area {
   position [ -20.0, -50.0, 40.0 ]
   color [ 0.6, 0.1, 0.1 ]
+  a [0.577, 0.577, 0.577]
+  b [0.408, -0.816, 0.408]
 }
 
 scene group {

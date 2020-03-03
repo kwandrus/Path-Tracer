@@ -16,6 +16,12 @@
 
 using namespace std;
 
+#define ALBEDO 0.18
+#define BIAS 0.0001
+
+Vector uniformSampleHemisphere(const float& r1, const float& r2);
+void createCoordinateSystem(const Vector& N, Vector& Nt, Vector& Nb);
+
 Scene::Scene()
 {
     object = 0;
@@ -24,7 +30,7 @@ Scene::Scene()
     ambient = Color(0, 0, 0);
     image = 0;
     minAttenuation = 0;
-    numAASamples = 0;
+    numSamples = 0;
 }
 
 Scene::~Scene()
@@ -59,20 +65,6 @@ int max(int n1, int n2)
     return n2;
 }
 
-void Scene::moveObjects(Color& result, const RenderContext& context, const Ray& ray, const Color& atten) 
-{
-    // if true, then one of the objects in the group is moving
-    if (object->getMotion()) {
-        double time = double(rand()) / double(RAND_MAX);
-        object->moveObjects(time);
-        result += traceRay(context, ray, atten, 0);
-        object->moveObjects(-1 * time);
-    }
-    else {
-        result += traceRay(context, ray, atten, 0);
-    }
-}
-
 void Scene::render()
 {
     if(!object || !background || !camera || !image){
@@ -93,55 +85,10 @@ void Scene::render()
             Ray ray;
             Color result(0, 0, 0);
 
-            // anti-aliasing and potentially depth of field (depending on camera) and motion
-            // uses number of samples for anti aliasing for all components (DOF, motion)
-            if (numAASamples > 0) {
-                // anti-aliasing - jittered sampling
-                // divide pixel into dim x dim grid and sample each cell in the grid
-                int dim = (int)sqrt((float)numAASamples);
-                for (int k = 0; k < dim; k++) {
-                    for (int l = 0; l < dim; l++) {
-                        // get x and y values within grid cell to sample
-                        double randNum = double(rand()) / double(RAND_MAX);
-                        double sampleX = double(j) - 0.5 + (double(l) + randNum) / double(dim);
-                        randNum = double(rand()) / double(RAND_MAX);
-                        double sampleY = double(i) - 0.5 + (double(k) + randNum) / double(dim);
-                        double x = xmin + sampleX * dx;
-                        double y = ymin + sampleY * dy;
-
-                        camera->makeRay(ray, context, x, y);
-
-                        // move objects in scene (if any)
-                        moveObjects(result, context, ray, atten);
-                    }
-                }
-
-                result /= float(numAASamples);
-            }
-            // depth of field and motion(no anti aliasing)
-            // uses number of samples for DOF for motion too (if an object in the scene is moving)
-            else if (camera->getNumSamples() > 0 || object->getMotion()) {
-                int numSamples = max(camera->getNumSamples(), object->getMotionSamples());
-
-                for (int k = 0; k < numSamples; k++) {
-                    double x = xmin + j * dx;
-                    double y = ymin + i * dy;
-
-                    camera->makeRay(ray, context, x, y);
-
-                    // move objects in scene (if any)
-                    moveObjects(result, context, ray, atten);
-                }
-
-                result /= float(numSamples);
-            }
-            // normal ray tracing
-            else {
-                double x = xmin + j * dx;
-                double y = ymin + i * dy;
-                camera->makeRay(ray, context, x, y);
-                result += traceRay(context, ray, atten, 0);
-            }
+            double x = xmin + j * dx;
+            double y = ymin + i * dy;
+            camera->makeRay(ray, context, x, y);
+            result += traceRay(context, ray, atten, 0);
 
             image->set(j, i, result);
         }
@@ -150,30 +97,51 @@ void Scene::render()
 
 Color Scene::traceRay(const RenderContext& context, const Ray& ray, const Color& atten, int depth) const
 {
-    Color result(0, 0, 0);
+    // code based off of: https://www.scratchapixel.com/code.php?id=34&origin=/lessons/3d-basic-rendering/global-illumination-path-tracing
+    
+    Color result(0, 0, 0), indirect(0, 0, 0), direct(0, 0, 0);
     HitRecord hit(DBL_MAX);
     object->intersect(hit, context, ray);
-    if (hit.getPrimitive()) {
+
+    if (depth <= maxRayDepth && hit.getPrimitive()) {
         // Ray hit something...
         const Material* matl = hit.getMaterial();
 
-        result += matl->shade(context, ray, hit, atten, depth);
+        // compute DIRECT light
+        direct = matl->shade(context, ray, hit, atten, depth);
 
-        if (matl->getReflective() && depth < maxRayDepth) {
-            // compute intersection info
-            Point hitpos = ray.origin() + ray.direction() * hit.minT();
-            Vector normal;
-            hit.getPrimitive()->normal(normal, context, hitpos, ray, hit);
-            normal.normalize();
+        // compute INDIRECT light
+        // intersection info
+        Point hitpos = ray.origin() + ray.direction() * hit.minT();
+        Vector normal;
+        hit.getPrimitive()->normal(normal, context, hitpos, ray, hit);
+        normal.normalize();
 
-            // compute reflection ray info
-            Vector reflect_direction = ray.direction() - 2 * Dot(normal, ray.direction()) * normal;
-            reflect_direction.normalize();
-            Ray reflectRay = Ray(hitpos, reflect_direction);
+        Vector Nt, Nb;
+        createCoordinateSystem(normal, Nt, Nb);
+        float pdf = float(1) / (float(2) * M_PI);
+        for (int i = 0; i < numSamples; i++) {
+            // create random numbers between [0, 1)
+            double randNum1 = double(rand()) / double(RAND_MAX + 1);
+            double randNum2 = double(rand()) / double(RAND_MAX + 1);
 
-            // recurse reflection ray
-            result += traceRay(context, reflectRay, atten, depth + 1) * matl->getKs();
-        }        
+            Vector sample = uniformSampleHemisphere(randNum1, randNum2);
+            Vector sampleWorld(
+                sample.x * Nb.x + sample.y * normal.x + sample.z * Nt.x,
+                sample.x * Nb.y + sample.y * normal.y + sample.z * Nt.y,
+                sample.x * Nb.z + sample.y * normal.z + sample.z * Nt.z);
+
+            // create ray
+            Ray nextRay(hitpos + sampleWorld * BIAS, sampleWorld);
+
+            // don't forget to divide by PDF and multiply by cos(theta)
+            // randNum1 == cos(theta) from uniformSampleHemisphere()
+            indirect += (traceRay(context, nextRay, atten, depth + 1) * randNum1) / pdf;
+        }
+        // divide by N
+        indirect /= float(numSamples);
+
+        result = (direct / M_PI + indirect * 2.0) * ALBEDO;     
     }
     else {
         background->getBackgroundColor(result, context, ray);
@@ -182,22 +150,24 @@ Color Scene::traceRay(const RenderContext& context, const Ray& ray, const Color&
     return result;
 }
 
-//double Scene::traceRay(Color& result, const RenderContext& context, const Object* obj, const Ray& ray, const Color& atten, int depth) const
-//{
-//  if(depth >= maxRayDepth || atten.maxComponent() < minAttenuation){
-//    result = Color(0, 0, 0);
-//    return 0;
-//  } else {
-//    HitRecord hit(DBL_MAX);
-//    obj->intersect(hit, context, ray);
-//    if(hit.getPrimitive()){
-//      // Ray hit something...
-//      const Material* matl = hit.getMaterial();
-//      //matl->shade(result, context, ray, hit, atten, depth);
-//      return hit.minT();
-//    } else {
-//      background->getBackgroundColor(result, context, ray);
-//      return DBL_MAX;
-//    }
-//  }
-//}
+void createCoordinateSystem(const Vector& N, Vector& Nt, Vector& Nb)
+{
+    // source: https://www.scratchapixel.com/code.php?id=34&origin=/lessons/3d-basic-rendering/global-illumination-path-tracing
+
+    if (std::fabs(N.x) > std::fabs(N.y))
+        Nt = Vector(N.z, 0, -N.x) / sqrtf(N.x * N.x + N.z * N.z);
+    else
+        Nt = Vector(0, -N.z, N.y) / sqrtf(N.y * N.y + N.z * N.z);
+    Nb = Cross(N, Nt);
+}
+
+Vector uniformSampleHemisphere(const float& r1, const float& r2)
+{
+    // source: https://www.scratchapixel.com/code.php?id=34&origin=/lessons/3d-basic-rendering/global-illumination-path-tracing
+    
+    float sinTheta = sqrtf(1 - r1 * r1);
+    float phi = 2 * M_PI * r2;
+    float x = sinTheta * cosf(phi);
+    float z = sinTheta * sinf(phi);
+    return Vector(x, r1, z);
+}

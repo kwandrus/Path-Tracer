@@ -75,14 +75,12 @@ class Scene {
     minAttenuation = atten;
   }
   void setNumSamples(int num) {
-      numAASamples = num;
+      numSamples = num;
   }
 
   void preprocess();
-  void moveObjects(Color& result, const RenderContext& context, const Ray& ray, const Color& atten);
   void render();
   Color traceRay(const RenderContext& context, const Ray& ray, const Color& attenuation, int depth) const;
-  double traceRay(Color& result, const RenderContext& context, const Object* obj, const Ray& ray, const Color& attenuation, int depth) const;
 
  private:
   Scene(const Scene&);
@@ -95,7 +93,7 @@ class Scene {
   Object* object;
   std::vector<Light*> lights;
   int maxRayDepth;
-  int numAASamples;
+  int numSamples;
   double minAttenuation;
 
 };

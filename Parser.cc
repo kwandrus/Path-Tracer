@@ -444,6 +444,25 @@ Light *Parser::parsePointLight()
   return new PointLight( position, color );
 }
 
+Light* Parser::parseAreaLight()
+{
+    Point position(0.0, 0.0, 10.0);
+    Color color(1.0, 1.0, 1.0);
+    if (peek(Token::left_brace))
+        for (; ; )
+        {
+            if (peek("position"))
+                position = parsePoint();
+            else if (peek("color"))
+                color = parseColor();
+            else if (peek(Token::right_brace))
+                break;
+            else
+                throwParseException("Expected `position', `color' or }.");
+        }
+    return new AreaLight(position, color);
+}
+
 Light *Parser::parseLight()
 {
     if ( peek( "point" ) )
@@ -601,7 +620,7 @@ Scene *Parser::parseScene(
       yres = parseInteger();
     else if ( peek( "maxraydepth" ) )
       scene->setMaxRayDepth( parseInteger() );
-    else if ( peek( "samplesperpixel" ) )
+    else if ( peek( "numSamples" ) )
       scene->setNumSamples( parseInteger() );
     else if ( peek( "minattenuation" ) )
       scene->setMinAttenuation( parseReal() );

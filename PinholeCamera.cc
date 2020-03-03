@@ -34,3 +34,10 @@ void PinholeCamera::makeRay(Ray& ray, const RenderContext& context, double x, do
   direction.normalize();
   ray = Ray(eye, direction);
 }
+
+void PinholeCamera::makeRandomRay(Ray& ray, const RenderContext& context, double x, double y) const
+{
+    Vector direction = lookdir + u * x + v * y;
+    direction.normalize();
+    ray = Ray(eye, direction);
+}

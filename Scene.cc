@@ -138,6 +138,28 @@ Color Scene::traceRay(const RenderContext& context, const Ray& ray, const Color&
         float pdf;
 
         if (depth < maxRayDepth && matl->scatter(hitpos, normal, scattered, pdf)) {
+            /*double rand1 = double(rand()) / double(RAND_MAX);
+            double rand2 = double(rand()) / double(RAND_MAX);
+            Vector on_light = Vector(213 + rand1 * (343 - 213),
+                554, 227 + rand2 * (332 - 227));
+
+            double rand1 = double(rand()) / double(RAND_MAX);
+            double rand2 = double(rand()) / double(RAND_MAX);
+            Point samplePt = cornerPos + rand1 * a + rand2 * b;
+
+            Vector point = Vector(hitpos);
+            Vector to_light = on_light - point;
+            float distance_squared = to_light.length2();
+            to_light.normalize();
+            if (Dot(to_light, normal) < 0)
+                return Color(0, 0, 0);
+            float light_area = (343 - 213) * (332 - 227);
+            float light_cosine = fabs(to_light.y());
+            if (light_cosine < 0.000001)
+                return Color(0, 0, 0);
+            pdf = distance_squared / (light_cosine * light_area);
+            scattered = Ray(hitpos, to_light);*/
+
             indirect = traceRay(context, scattered, atten, depth + 1) * ALBEDO
                 * matl->scattering_pdf(normal, scattered) / pdf;
         }

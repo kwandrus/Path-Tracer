@@ -19,35 +19,9 @@ class LambertianMaterial : public Material {
   virtual float getKs() const;
 
 
-  // following 2 functions source: https://raytracing.github.io/books/RayTracingTheRestOfYourLife.html#importancesamplingmaterials
-  
-  virtual bool scatter(Point hitpos, Vector normal, Ray& scattered, float& pdf) const {
-      // generate 3 random numbers between -1 and 1
-      double rand1 = double(rand()) / double(RAND_MAX);
-      rand1 = -1.0 + 2.0 * rand1;
-      double rand2 = double(rand()) / double(RAND_MAX);
-      rand2 = -1.0 + 2.0 * rand2;
-      double rand3 = double(rand()) / double(RAND_MAX);
-      rand3 = -1.0 + 2.0 * rand3;
-      Vector randVec = Vector(rand1, rand2, rand3);
-
-      Vector point = Vector(hitpos);
-      Vector target = normal + point + randVec;
-      Vector dir = Vector(target - point);
-      dir.normalize();
-      scattered = Ray(hitpos, dir);
-      pdf = Dot(normal, scattered.direction()) / M_PI;
-      return true;
-  }
-
-  virtual float scattering_pdf(const Vector& normal, const Ray& scattered) const {
-      Vector scatteredDir = scattered.direction();
-      scatteredDir.normalize();
-      float cosine = Dot(normal, scatteredDir);
-      if (cosine < 0)
-          return 0;
-      return cosine / M_PI;
-  }
+  virtual float scattering_pdf(const Vector& normal, const Ray& scattered) const;
+  virtual bool scatter(Point hitpos, Vector normal, Ray& scattered, float& pdf) const;
+  Color sample_f(const Vector& normal, const Vector& wo, Vector& wi, float& pdf) const;
 
 
  private:
@@ -60,6 +34,20 @@ class LambertianMaterial : public Material {
   float Ks;
   int n;
   bool isReflective;
+};
+
+class onb
+{
+public:
+    onb() {}
+    inline Vector operator[](int i) const { return axis[i]; }
+    Vector u() const { return axis[0]; }
+    Vector v() const { return axis[1]; }
+    Vector w() const { return axis[2]; }
+    Vector local(float a, float b, float c) const { return a * u() + b * v() + c * w(); }
+    Vector local(const Vector& a) const { return a.x() * u() + a.y() * v() + a.z() * w(); }
+    void build_from_w(Vector&);
+    Vector axis[3];
 };
 
 #endif

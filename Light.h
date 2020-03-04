@@ -16,6 +16,7 @@ class Light {
   virtual void preprocess();
   virtual double getLight(Color& light_color, Vector& light_direction,
                           const RenderContext& context, const Point& pos) const = 0;
+  //virtual Color areaShade(const Ray& ray, Vector normal) const = 0;
 
  private:
   Light(const Light&);

@@ -30,7 +30,7 @@ double AreaLight::getLight(Color& light_color, Vector& light_direction,
 }
 
 // used in direct rendering of area light (not its direct illumination on other surfaces)
-Color AreaLight::areaShade(const Ray& ray, Vector normal) const{
+Color AreaLight::areaShade(const Ray& ray, Vector normal) const {
     // source: Ray Tracing from the Ground Up, pg 332
 
     if (Dot(-normal, ray.direction()) > 0.0)

@@ -10,6 +10,7 @@
 #include "Ray.h"
 #include "RenderContext.h"
 #include "Primitive.h"
+#include "Vector.h"
 #include <float.h>
 #include <iostream>
 #include <stdlib.h>
@@ -85,10 +86,23 @@ void Scene::render()
             Ray ray;
             Color result(0, 0, 0);
 
-            double x = xmin + j * dx;
-            double y = ymin + i * dy;
-            camera->makeRay(ray, context, x, y);
-            result += traceRay(context, ray, atten, 0);
+            int dim = (int)sqrt((float)numSamples);
+            for (int k = 0; k < dim; k++) {
+                for (int l = 0; l < dim; l++) {
+                    // get x and y values within grid cell to sample
+                    double randNum = double(rand()) / double(RAND_MAX);
+                    double sampleX = double(j) - 0.5 + (double(l) + randNum) / double(dim);
+                    randNum = double(rand()) / double(RAND_MAX);
+                    double sampleY = double(i) - 0.5 + (double(k) + randNum) / double(dim);
+                    double x = xmin + sampleX * dx;
+                    double y = ymin + sampleY * dy;
+
+                    camera->makeRay(ray, context, x, y);
+                    result += traceRay(context, ray, atten, 0);
+                }
+            }
+
+            result /= float(numSamples);
 
             image->set(j, i, result);
         }
@@ -98,9 +112,9 @@ void Scene::render()
 Color Scene::traceRay(const RenderContext& context, const Ray& ray, const Color& atten, int depth) const
 {
     // code based off of: https://www.scratchapixel.com/code.php?id=34&origin=/lessons/3d-basic-rendering/global-illumination-path-tracing
-    
-    if (depth == maxRayDepth)
-        return Color(0, 0, 0);
+
+    /*if (depth == maxRayDepth)
+        return Color(0, 0, 0);*/
 
     Color result(0, 0, 0), indirect(0, 0, 0), direct(0, 0, 0);
     HitRecord hit(DBL_MAX);
@@ -120,38 +134,82 @@ Color Scene::traceRay(const RenderContext& context, const Ray& ray, const Color&
         hit.getPrimitive()->normal(normal, context, hitpos, ray, hit);
         normal.normalize();
 
-        Vector Nt, Nb;
-        createCoordinateSystem(normal, Nt, Nb);
-        float pdf = float(1) / (float(2) * M_PI);
-        for (int i = 0; i < numSamples; i++) {
-            // create random numbers between [0, 1)
-            double randNum1 = double(rand()) / double(RAND_MAX + 1);
-            double randNum2 = double(rand()) / double(RAND_MAX + 1);
+        Ray scattered;
+        float pdf;
 
-            Vector sample = uniformSampleHemisphere(randNum1, randNum2);
-            Vector sampleWorld(
-                sample.x() * Nb.x() + sample.y() * normal.x() + sample.z() * Nt.x(),
-                sample.x() * Nb.y() + sample.y() * normal.y() + sample.z() * Nt.y(),
-                sample.x() * Nb.z() + sample.y() * normal.z() + sample.z() * Nt.z());
-
-            // create ray
-            Ray nextRay(hitpos + sampleWorld * BIAS, sampleWorld);
-
-            // don't forget to divide by PDF and multiply by cos(theta)
-            // randNum1 == cos(theta) from uniformSampleHemisphere()
-            indirect += (traceRay(context, nextRay, atten, depth + 1) * randNum1) / pdf;
+        if (depth < maxRayDepth && matl->scatter(hitpos, normal, scattered, pdf)) {
+            indirect = traceRay(context, scattered, atten, depth + 1) * ALBEDO
+                * matl->scattering_pdf(normal, scattered) / pdf;
         }
-        // divide by N
-        indirect /= float(numSamples);
 
-        result = (direct / M_PI + indirect * 2.0) * ALBEDO;     
+        result = (direct + indirect);
     }
     else {
         background->getBackgroundColor(result, context, ray);
+        //result = Color(0, 0, 0);
     }
 
     return result;
 }
+
+//Color Scene::traceRay(const RenderContext& context, const Ray& ray, const Color& atten, int depth) const
+//{
+//    // code based off of: https://www.scratchapixel.com/code.php?id=34&origin=/lessons/3d-basic-rendering/global-illumination-path-tracing
+//    
+//    if (depth == maxRayDepth)
+//        return Color(0, 0, 0);
+//
+//    Color result(0, 0, 0), indirect(0, 0, 0), direct(0, 0, 0);
+//    HitRecord hit(DBL_MAX);
+//    object->intersect(hit, context, ray);
+//
+//    if (hit.getPrimitive()) {
+//        // Ray hit something...
+//        const Material* matl = hit.getMaterial();
+//
+//        // compute DIRECT light
+//        direct = matl->shade(context, ray, hit, atten, depth);
+//
+//        // compute INDIRECT light
+//        // intersection info
+//        Point hitpos = ray.origin() + ray.direction() * hit.minT();
+//        Vector normal;
+//        hit.getPrimitive()->normal(normal, context, hitpos, ray, hit);
+//        normal.normalize();
+//
+//        Vector Nt, Nb;
+//        createCoordinateSystem(normal, Nt, Nb);
+//        float pdf = float(1) / (float(2) * M_PI);
+//        //for (int i = 0; i < numSamples; i++) {
+//            // create random numbers between [0, 1)
+//            double randNum1 = double(rand()) / double(RAND_MAX + 1);
+//            double randNum2 = double(rand()) / double(RAND_MAX + 1);
+//
+//            Vector sample = uniformSampleHemisphere(randNum1, randNum2);
+//            Vector sampleWorld(
+//                sample.x() * Nb.x() + sample.y() * normal.x() + sample.z() * Nt.x(),
+//                sample.x() * Nb.y() + sample.y() * normal.y() + sample.z() * Nt.y(),
+//                sample.x() * Nb.z() + sample.y() * normal.z() + sample.z() * Nt.z());
+//
+//            // create ray
+//            Ray nextRay(hitpos + sampleWorld * BIAS, sampleWorld);
+//
+//            // don't forget to divide by PDF and multiply by cos(theta)
+//            // randNum1 == cos(theta) from uniformSampleHemisphere()
+//            indirect += (traceRay(context, nextRay, atten, depth + 1) * randNum1) / pdf;
+//        //}
+//        // divide by N
+//        //indirect /= float(numSamples);
+//
+//        result = (direct + indirect) * ALBEDO;     
+//    }
+//    else {
+//        background->getBackgroundColor(result, context, ray);
+//        //result = Color(0, 0, 0);
+//    }
+//
+//    return result;
+//}
 
 void createCoordinateSystem(const Vector& N, Vector& Nt, Vector& Nb)
 {

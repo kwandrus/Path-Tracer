@@ -1,11 +1,11 @@
 // This is a test scene for Specter.  Try running "specter test.scn".
 
-xres 256
-yres 256
+xres 512
+yres 512
 filename "image.ppm"
 maxraydepth 4
 minattenuation 0.2
-numSamples 10
+numSamples 50
 
 camera pinhole {
   eye [ -24.0, -2.0, 5.2 ]

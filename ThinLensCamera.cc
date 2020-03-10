@@ -3,6 +3,7 @@
 #include "Ray.h"
 #include "Math.h"
 #include <math.h>
+#include <cstdlib>
 
 ThinLensCamera::ThinLensCamera(const Point& eye, const Point& lookat, const Vector& up,
                              double hfov, double aperture, int numDOFSamples)

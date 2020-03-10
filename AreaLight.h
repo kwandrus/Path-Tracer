@@ -22,8 +22,8 @@ class AreaLight : public Light {
   AreaLight& operator=(const AreaLight&);
 
   Point cornerPos;
-  Vector a, b; // represent dimensions of rectangle
   Color color;
+  Vector a, b; // represent dimensions of rectangle  
 
   float ls; // radiance scaling factor
 };
